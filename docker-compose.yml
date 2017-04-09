@@ -1,0 +1,19 @@
+version: '3'
+services:
+    nginx:
+        restart: always
+        image: ninexty/nginx:latest
+        build: ./nginx
+        ports: ["80"]
+        volumes: ["staticfiles:/static"]
+        links: [webapp]
+
+    webapp:
+        restart: always
+        image: ninexty/backtester:latest
+        build: ./webapp
+        ports: ["8000"]
+        volumes: ["staticfiles:/DjangoBacktester/static"]
+
+volumes:
+    staticfiles:
