@@ -4,16 +4,16 @@ services:
         restart: always
         image: ninexty/nginx:latest
         build: ./nginx
-        ports: ["80"]
-        volumes: ["staticfiles:/static"]
+        ports: ["80:80"]
+        volumes: ["staticfiles:/static", "mediafiles:/media"]
         links: [webapp]
 
     webapp:
         restart: always
         image: ninexty/backtester:latest
         build: ./webapp
-        ports: ["8000"]
-        volumes: ["staticfiles:/DjangoBacktester/static"]
-
+        expose: ["8000"]
+        volumes: ["staticfiles:/DjangoBacktester/static", "mediafiles:/DjangoBacktester/media"]
 volumes:
     staticfiles:
+    mediafiles:
