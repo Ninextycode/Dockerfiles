@@ -1,19 +1,56 @@
 version: '3'
 services:
+    db:
+        image: mysql:5.7
+        restart: always
+        environment:
+            MYSQL_ROOT_PASSWORD: wordpress
+            MYSQL_DATABASE: wordpress
+            MYSQL_USER: wordpress
+            MYSQL_PASSWORD: wordpress
+        volumes:
+            - dbdata:/var/lib/mysql
+
+    wordpress:
+        depends_on:
+            - db
+        image: wordpress:fpm
+        restart: always
+        volumes: 
+            - wpdata:/var/www/html
+        expose: 
+            - "9000"
+            - "80"
+        environment:
+            WORDPRESS_DB_HOST: db:3306
+            WORDPRESS_DB_PASSWORD: wordpress
+
     nginx:
+        depends_on:
+            - wordpress
+            - webapp
         restart: always
         image: ninexty/nginx:latest
         build: ./nginx
         ports: ["80:80"]
-        volumes: ["staticfiles:/static", "mediafiles:/media"]
-        links: [webapp]
+        volumes:
+            - staticfiles:/static
+            - mediafiles:/media
+            - wpdata:/var/www/html
+        links: 
+            - webapp
+            - wordpress
 
     webapp:
         restart: always
         image: ninexty/backtester:latest
         build: ./webapp
-        expose: ["8000"]
+        expose: 
+            - "8000"
         volumes: ["staticfiles:/DjangoBacktester/static", "mediafiles:/DjangoBacktester/media"]
 volumes:
+    dbdata:
+    wpdata:
     staticfiles:
     mediafiles:
+
