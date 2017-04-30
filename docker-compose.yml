@@ -27,28 +27,28 @@ services:
     nginx:
         depends_on:
             - wordpress
-            - backtester
+            - django
         restart: always
         image: ninexty/nginx:latest
         build: ./nginx
         ports: ["80:80"]
         volumes:
-            - staticfiles:/backtester/static
-            - mediafiles:/backtester/media
+            - staticfiles:/django/static
+            - mediafiles:/django/media
             - wpdata:/var/www/html
         links: 
-            - backtester
+            - django
             - wordpress
 
-    backtester:
+    django:
         restart: always
-        image: ninexty/backtester:latest
-        build: ./backtester
+        image: ninexty/django:latest
+        build: ./django
         expose: 
             - "8000"
-        volumes: ["staticfiles:/DjangoBacktester/static", "mediafiles:/DjangoBacktester/media"]
+        volumes: ["staticfiles:/MyAppsSite/static", "mediafiles:/MyAppsSite/media"]
 volumes:
-    dbdata:
+    dbdata: 
     wpdata:
     staticfiles:
     mediafiles:
